@@ -18,11 +18,18 @@ async function run() {
         const carouselCollection = client.db('carouselCollection').collection('carousel');
         const photoCollection = client.db('photoCollection').collection('photo');
         const achivementCollection = client.db('achivementCollection').collection('achivement');
+        const categoriesCollection = client.db('CategoriesCollection').collection('Category');
 
+        app.get('/category', async (req, res) => {
+            const query = {};
+            const result = await categoriesCollection.find(query).toArray();
+            res.send(result);
+            console.log('categoreis responsed');
+        })
         // photos crud
         app.get('/photos', async (req, res) => {
             const limit = parseInt(req.query.limit);
-            const query = { album: req.query.album };
+            const query = req.query.album ? { album: req.query.album } : {};
             const result = await photoCollection.find(query).sort({ _id: -1 }).limit(limit).toArray();
             res.send(result);
             console.log(`Photos responsed ${limit}`);
