@@ -21,10 +21,11 @@ async function run() {
 
         // photos crud
         app.get('/photos', async (req, res) => {
-            const query = {};
-            const result = await photoCollection.find(query).sort({ _id: 1 }).toArray();
+            const limit = parseInt(req.query.limit);
+            const query = { album: req.query.album };
+            const result = await photoCollection.find(query).sort({ _id: -1 }).limit(limit).toArray();
             res.send(result);
-            console.log('Photos responsed');
+            console.log(`Photos responsed ${limit}`);
         })
         // specific photo
         app.get('/photo', async (req, res) => {
@@ -59,7 +60,7 @@ async function run() {
         // carousel crud
         app.get('/carousels', async (req, res) => {
             const query = {};
-            const result = await carouselCollection.find(query).sort({ _id: 1 }).toArray();
+            const result = await carouselCollection.find(query).sort({ _id: -1 }).toArray();
             res.send(result);
             console.log('carousel responsed');
         })
