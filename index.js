@@ -19,12 +19,6 @@ async function run() {
         const photoCollection = client.db('photoCollection').collection('photo');
         const achivementCollection = client.db('achivementCollection').collection('achivement');
 
-        app.get('/carousel', async (req, res) => {
-            const query = {};
-            const result = await carouselCollection.find(query).toArray();
-            res.send(result);
-            console.log('carousels responsed');
-        })
         // photos crud
         app.get('/photos', async (req, res) => {
             const query = {};
@@ -61,12 +55,71 @@ async function run() {
             res.send(result);
             console.log(`photo ${id} is updated`);
         })
+
+        // carousel crud
+        app.get('/carousels', async (req, res) => {
+            const query = {};
+            const result = await carouselCollection.find(query).sort({ _id: 1 }).toArray();
+            res.send(result);
+            console.log('carousel responsed');
+        })
+        // specific photo
+        app.get('/carousel', async (req, res) => {
+            const id = req.query.id;
+            const query = { _id: ObjectId(id) }
+            const result = await carouselCollection.findOne(query);
+            res.send(result)
+            console.log(`carousel ${id} is responsing`);
+        })
+        app.post('/carousel', async (req, res) => {
+            const newCarousel = req.body.data;
+            const result = await carouselCollection.insertOne(newCarousel);
+            res.send(result);
+            console.log('new carousel added');
+        })
+        app.delete('/carousel/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await carouselCollection.deleteOne(query);
+            res.send(result);
+            console.log(`carousel ${id} deleted`);
+        })
+        app.put('/carousel/:id', async (req, res) => {
+            const id = req.params.id;
+            const updateData = req.body;
+            const query = { _id: ObjectId(id) };
+            const result = await carouselCollection.updateMany(query, { $set: updateData })
+            res.send(result);
+            console.log(`carousel ${id} is updated`);
+        })
         // achivements crud
         app.get('/achivements', async (req, res) => {
             const query = {};
             const result = await achivementCollection.find(query).toArray();
             res.send(result);
             console.log('achivements responsed');
+        })
+        // specific achivement
+        app.post('/achivement', async (req, res) => {
+            const newAchivement = req.body.data;
+            const result = await achivementCollection.insertOne(newAchivement);
+            res.send(result);
+            console.log('new achivement added');
+        })
+        app.delete('/achivement/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await achivementCollection.deleteOne(query);
+            res.send(result);
+            console.log(`achivement ${id} deleted`);
+        })
+        app.put('/achivement/:id', async (req, res) => {
+            const id = req.params.id;
+            const updateData = req.body;
+            const query = { _id: ObjectId(id) };
+            const result = await achivementCollection.updateMany(query, { $set: updateData })
+            res.send(result);
+            console.log(`achivement ${id} is updated`);
         })
     } finally { }
 }
